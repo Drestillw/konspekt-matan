@@ -1,0 +1,837 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Пределы и комплексные числа</title>
+<meta name="description" content="Конспект к контрольной: определение предела, теоремы о пределах, комплексные числа, корни, комплексная степень и разбор всех задач.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=STIX+Two+Text:ital,wght@0,500;0,600;1,500&display=swap">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { enableMenu: false }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+(function () {
+  var tg = window.Telegram && window.Telegram.WebApp;
+  if (!tg || !tg.initData) return;
+  try { tg.ready(); tg.expand(); document.documentElement.setAttribute('data-theme', tg.colorScheme === 'dark' ? 'dark' : 'light');
+    tg.onEvent('themeChanged', function () { document.documentElement.setAttribute('data-theme', tg.colorScheme === 'dark' ? 'dark' : 'light'); }); } catch (e) {}
+})();
+</script>
+<style>
+/* Layout: слева липкое оглавление (на телефоне — полоса глав сверху), справа одна колонка уроков; каждый урок = теория → пример → живая картинка. */
+:root {
+  --bg: #f3f5f4;
+  --surface: #ffffff;
+  --fg: #172124;
+  --muted: #5b696d;
+  --line: #d6dddc;
+  --grid: #e7ecea;
+  --teal: #0b7a6a;
+  --tealbg: rgba(11, 122, 106, 0.10);
+  --orange: #c4501a;
+  --orangebg: rgba(196, 80, 26, 0.10);
+  --blue: #2f5fb3;
+  --bluebg: rgba(47, 95, 179, 0.10);
+  --dot: #8a989c;
+  --serif: "STIX Two Text", "Times New Roman", serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1618; --surface: #172124; --fg: #e7eeed; --muted: #9aabae; --line: #2a383b; --grid: #1e2b2e;
+    --teal: #4fd1b8; --tealbg: rgba(79, 209, 184, 0.12); --orange: #ff9560; --orangebg: rgba(255, 149, 96, 0.12);
+    --blue: #7fa8ff; --bluebg: rgba(127, 168, 255, 0.12); --dot: #6f8387;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1618; --surface: #172124; --fg: #e7eeed; --muted: #9aabae; --line: #2a383b; --grid: #1e2b2e;
+  --teal: #4fd1b8; --tealbg: rgba(79, 209, 184, 0.12); --orange: #ff9560; --orangebg: rgba(255, 149, 96, 0.12);
+  --blue: #7fa8ff; --bluebg: rgba(127, 168, 255, 0.12); --dot: #6f8387;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.6; }
+.shell { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 0 64px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 40px; }
+nav.toc { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 28px; }
+nav.toc .brand { font-family: var(--serif); font-weight: 600; font-size: 19px; line-height: 1.25; margin: 0 0 16px; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; counter-reset: c; }
+nav.toc a { display: flex; gap: 10px; align-items: baseline; text-decoration: none; color: var(--muted); font-size: 14px; padding: 5px 8px; border-radius: 6px; }
+nav.toc a .n { font-family: var(--mono); font-size: 12px; color: var(--muted); min-width: 18px; }
+nav.toc a:hover { color: var(--fg); background: var(--surface); }
+nav.toc a.on { color: var(--fg); background: var(--surface); box-shadow: inset 2px 0 0 var(--teal); }
+main { min-width: 0; padding-block: 28px; }
+header.hero { padding-block: 8px 24px; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+header.hero p.kicker { margin: 0 0 6px; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); font-weight: 600; }
+h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(30px, 5vw, 46px); line-height: 1.1; margin: 0 0 12px; text-wrap: balance; }
+header.hero .lede { margin: 0; color: var(--muted); max-width: 64ch; }
+.route { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.route span { font-size: 13px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--muted); background: var(--surface); }
+section.lesson { padding-block: 36px 8px; border-bottom: 1px solid var(--line); scroll-margin-top: 64px; }
+section.lesson > .num { font-family: var(--mono); font-size: 13px; color: var(--teal); margin: 0; }
+h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(24px, 3.4vw, 32px); line-height: 1.2; margin: 2px 0 14px; text-wrap: balance; }
+h3 { font-size: 17px; font-weight: 600; margin: 26px 0 8px; }
+p, li { max-width: 70ch; }
+p { margin: 0 0 12px; }
+ul, ol { padding-left: 22px; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.key { background: var(--tealbg); border-radius: 10px; padding: 14px 16px; margin: 16px 0; }
+.key b.t { display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+.warn { background: var(--orangebg); border-radius: 10px; padding: 14px 16px; margin: 16px 0; }
+.warn b.t { display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orange); margin-bottom: 4px; }
+.ex { border-left: 3px solid var(--blue); padding: 6px 0 6px 14px; margin: 16px 0; }
+.ex > b.t { display: block; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); margin-bottom: 4px; }
+.ex p:last-child, .key p:last-child, .warn p:last-child { margin-bottom: 0; }
+.math { overflow-x: auto; overflow-y: hidden; }
+details.sol .body > mjx-container, .key > mjx-container, .ex > mjx-container, section.lesson > mjx-container { margin: 10px 0; }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; }
+.lab { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px; margin: 20px 0; }
+.lab .cap { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; align-items: baseline; margin: 2px 4px 8px; }
+.lab .cap b { font-size: 14px; }
+.lab .cap span { font-size: 13px; color: var(--muted); }
+.lab canvas { display: block; width: 100%; height: clamp(260px, 46vw, 400px); touch-action: none; }
+.lab canvas.sq { height: clamp(280px, 60vw, 420px); }
+.ctrl { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 10px 4px 2px; font-size: 14px; }
+.ctrl label { display: flex; align-items: center; gap: 8px; }
+.ctrl input[type="range"] { width: 160px; accent-color: var(--teal); }
+.ctrl output, .readout { font-family: var(--mono); font-size: 13.5px; font-variant-numeric: tabular-nums; }
+.readout { margin: 8px 4px 0; padding: 8px 10px; background: var(--bg); border-radius: 8px; line-height: 1.5; overflow-x: auto; white-space: nowrap; }
+button { font: inherit; font-size: 14px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; cursor: pointer; min-height: 34px; }
+button:hover { border-color: var(--teal); }
+button.pri { background: var(--teal); color: var(--surface); border-color: var(--teal); font-weight: 600; }
+button[aria-pressed="true"] { background: var(--tealbg); border-color: var(--teal); }
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+details.sol { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); margin: 12px 0; }
+details.sol > summary { cursor: pointer; padding: 12px 14px; font-weight: 600; list-style: none; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+details.sol > summary::-webkit-details-marker { display: none; }
+details.sol > summary::before { content: "+"; font-family: var(--mono); color: var(--teal); width: 14px; }
+details.sol[open] > summary::before { content: "−"; }
+details.sol > summary .ans { margin-left: auto; font-family: var(--mono); font-weight: 500; font-size: 13px; color: var(--muted); }
+details.sol .body { padding: 0 16px 14px 38px; }
+.step { counter-increment: st; position: relative; }
+.steps { counter-reset: st; }
+.steps .step::before { content: counter(st); position: absolute; left: -24px; top: 1px; font-family: var(--mono); font-size: 12px; color: var(--teal); }
+table.cheat { width: 100%; border-collapse: collapse; font-size: 15px; }
+.tw { overflow-x: auto; }
+table.cheat td, table.cheat th { border-bottom: 1px solid var(--line); padding: 10px 8px; vertical-align: top; text-align: left; }
+table.cheat th { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.quiz { display: grid; gap: 14px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.q p { margin-bottom: 10px; }
+.q .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.q .opts button.ok { background: var(--tealbg); border-color: var(--teal); }
+.q .opts button.no { background: var(--orangebg); border-color: var(--orange); }
+.q .fb { font-size: 14px; color: var(--muted); margin: 10px 0 0; min-height: 1px; }
+.score { font-family: var(--mono); font-size: 14px; color: var(--muted); }
+footer { padding-block: 28px; color: var(--muted); font-size: 13px; }
+.mobnav { display: none; }
+@media (max-width: 900px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  nav.toc { display: none; }
+  .mobnav { display: flex; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; gap: 6px; overflow-x: auto; padding: 10px 16px; margin-inline: -16px; background: var(--bg); border-bottom: 1px solid var(--line); scrollbar-width: none; }
+  .mobnav a { flex: none; font-size: 13px; text-decoration: none; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; background: var(--surface); }
+  .mobnav a.on { color: var(--fg); border-color: var(--teal); }
+  details.sol .body { padding-left: 32px; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <nav class="toc" aria-label="Оглавление">
+    <p class="brand">Пределы и комплексные числа</p>
+    <ol id="toc"></ol>
+  </nav>
+  <main>
+    <div class="mobnav" id="mobnav" aria-label="Главы"></div>
+    <header class="hero">
+      <p class="kicker">Конспект к контрольной</p>
+      <h1>Пределы и комплексные числа</h1>
+      <p class="lede">Всё, что нужно для контрольной «Комплексные числа и пределы»: теория простыми словами, живые картинки, которые можно крутить, и разбор всех десяти задач по шагам. Читайте по порядку: каждая глава опирается на предыдущую.</p>
+      <div class="route"><span>Пределы → глава 1–3</span><span>Комплексные числа → глава 4–9</span><span>Контрольная → глава 10</span><span>Тест → глава 11</span></div>
+    </header>
+
+    <!-- 1 -->
+    <section class="lesson" id="limit" data-t="Предел последовательности">
+      <p class="num">Глава 1</p>
+      <h2>Предел последовательности: что такое ε, n и N</h2>
+      <p><b>Последовательность</b> — это просто занумерованный список чисел: \(a_1, a_2, a_3, \dots\). Номер члена обозначают маленькой \(n\). Например, \(a_n = \tfrac1n\) даёт \(1, \tfrac12, \tfrac13, \tfrac14, \dots\)</p>
+      <div class="key"><b class="t">Определение</b>
+        <p>Число \(a\) — предел последовательности \(a_n\), если для любого \(\varepsilon &gt; 0\) найдётся номер \(N\) такой, что для всех \(n &gt; N\) выполнено \(|a_n - a| &lt; \varepsilon\).</p>
+        \[ \forall \varepsilon&gt;0 \;\; \exists N \;\; \forall n&gt;N:\;\; |a_n-a|&lt;\varepsilon \]
+      </div>
+      <h3>Три буквы — три роли</h3>
+      <ul>
+        <li><b>ε</b> — допуск: «насколько близко к пределу». Его выбирает проверяющий, и он может быть сколь угодно маленьким.</li>
+        <li><b>N</b> — порог: один конкретный номер, после которого все члены уже близко. Его подбираешь ты, и он зависит от ε.</li>
+        <li><b>n</b> — номер любого члена, который мы проверяем. Условие должно выполняться для каждого \(n\) больше \(N\).</li>
+      </ul>
+      <h3>Окрестность</h3>
+      <p><b>ε-окрестность</b> точки \(a\) — это интервал \((a-\varepsilon;\,a+\varepsilon)\), то есть все числа, которые ближе к \(a\), чем на ε. Запись \(|a_n - a| &lt; \varepsilon\) значит ровно «\(a_n\) лежит в ε-окрестности \(a\)». Поэтому определение можно сказать так: <i>в любой окрестности предела лежат все члены, кроме конечного числа первых</i>.</p>
+      <div class="lab">
+        <div class="cap"><b>Живая картинка: \(a_n = 1/n \to 0\)</b><span>Уменьшайте ε — порог N уезжает вправо</span></div>
+        <canvas id="cvEps" aria-label="Точки последовательности 1/n, полоса ε вокруг нуля и порог N"></canvas>
+        <div class="ctrl">
+          <label>ε <input type="range" id="epsR" min="0" max="1000" value="300"><output id="epsO"></output></label>
+          <button class="pri" id="epsPlay" type="button">▶ Уменьшать ε</button>
+        </div>
+        <div class="readout" id="epsTxt"></div>
+      </div>
+      <div class="ex"><b class="t">Пример</b>
+        <p>Докажем, что \(\tfrac1n \to 0\). Берём любое \(\varepsilon&gt;0\). Нужно \(\tfrac1n &lt; \varepsilon\), то есть \(n &gt; \tfrac1\varepsilon\). Берём \(N = \lceil 1/\varepsilon \rceil\). Тогда для всех \(n&gt;N\) выполнено \(|\tfrac1n - 0| &lt; \varepsilon\). Для \(\varepsilon=0{,}01\) получаем \(N=100\).</p>
+      </div>
+      <div class="warn"><b class="t">Как показать, что предела нет</b>
+        <p>Отрицание определения: найдётся ε, что для любого N есть \(n&gt;N\) с \(|a_n-a|\ge\varepsilon\). Пример: \((-1)^n\) прыгает между \(-1\) и \(1\). Для \(\varepsilon = 1\) никакое число не удержит в своей окрестности оба значения, поэтому предела нет.</p>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="lesson" id="tricks" data-t="Как считать пределы">
+      <p class="num">Глава 2</p>
+      <h2>Как считать пределы: пять приёмов</h2>
+      <p>На контрольной почти всё решается этими приёмами. Сначала посмотрите, какая перед вами неопределённость (\(\tfrac{\infty}{\infty}\), \(\infty-\infty\), \(\tfrac00\)), и выберите приём.</p>
+      <h3>1. Дробь из многочленов — делим на старшую степень</h3>
+      <p>Предел определяется старшими степенями. Если степени равны, ответ — отношение старших коэффициентов. Если степень числителя меньше — ответ 0, больше — \(\infty\).</p>
+      <div class="ex"><b class="t">Пример</b>\[ \lim_{n\to\infty}\frac{2n^2+5}{3n^2-n} = \lim\frac{2+5/n^2}{3-1/n} = \frac23. \]</div>
+      <h3>2. Разность корней — домножаем на сопряжённое</h3>
+      \[ \sqrt A-\sqrt B=\frac{A-B}{\sqrt A+\sqrt B}. \]
+      <div class="ex"><b class="t">Пример</b>\[ \sqrt{n+1}-\sqrt n=\frac{1}{\sqrt{n+1}+\sqrt n}\to 0. \]</div>
+      <h3>3. Ограниченная × бесконечно малая = бесконечно малая</h3>
+      <p>\(\sin n\) и \(\cos n\) предела не имеют, но они ограничены: \(|\sin n|\le 1\). Если умножить их на что-то, стремящееся к нулю, получится ноль.</p>
+      <div class="ex"><b class="t">Пример</b>\[ \frac{\sin n}{n}\to0,\qquad \frac{\cos n}{\sqrt n}\to 0. \]</div>
+      <h3>4. Неопределённость 0/0 у функции — раскладываем на множители</h3>
+      <div class="ex"><b class="t">Пример</b>\[ \lim_{x\to3}\frac{x^2-9}{x-3}=\lim_{x\to3}\frac{(x-3)(x+3)}{x-3}=\lim_{x\to3}(x+3)=6. \]</div>
+      <h3>5. Геометрическая прогрессия</h3>
+      <p>\(q^n \to 0\), если \(|q|&lt;1\). Это верно и для комплексных \(q\): смотрим на модуль.</p>
+      <div class="key"><b class="t">Полезная шкала роста</b><p>При \(n\to\infty\): \(\ln n \ll \sqrt n \ll n \ll n^2 \ll 2^n \ll n!\). Кто растёт быстрее, тот и «побеждает» в дроби.</p></div>
+    </section>
+
+    <!-- 3 -->
+    <section class="lesson" id="theorems" data-t="Теоремы о пределах">
+      <p class="num">Глава 3</p>
+      <h2>Теоремы о пределах</h2>
+      <p>Это инструменты, которыми пользуются, чтобы не возиться каждый раз с ε и N.</p>
+      <ol>
+        <li><b>Единственность.</b> У последовательности не больше одного предела.</li>
+        <li><b>Ограниченность.</b> Сходящаяся последовательность ограничена. Следствие: неограниченная расходится. Обратное неверно: \((-1)^n\) ограничена, но расходится.</li>
+        <li><b>Арифметика.</b> Если \(a_n\to a\), \(b_n\to b\), то \(a_n\pm b_n\to a\pm b\), \(a_nb_n\to ab\), \(a_n/b_n\to a/b\) при \(b\ne0\). Работает, только если оба предела существуют.</li>
+        <li><b>Сохранение знака.</b> Если \(a_n\to a&gt;0\), то с некоторого номера \(a_n&gt;0\).</li>
+        <li><b>Переход к пределу в неравенстве.</b> Если \(a_n\le b_n\), то \(a\le b\). Строгое неравенство может стать нестрогим: \(\tfrac1n&gt;0\), но предел равен 0.</li>
+        <li><b>О двух милиционерах (сжатой последовательности).</b> Если \(a_n\le c_n\le b_n\) и \(a_n,b_n\to L\), то \(c_n\to L\).</li>
+        <li><b>О подпоследовательности.</b> Если \(a_n\to a\), то любая подпоследовательность тоже \(\to a\). Две подпоследовательности с разными пределами ⇒ предела нет.</li>
+        <li><b>Вейерштрасс.</b> Монотонная и ограниченная последовательность сходится.</li>
+        <li><b>Больцано–Вейерштрасс.</b> Из любой ограниченной последовательности можно выбрать сходящуюся подпоследовательность.</li>
+        <li><b>Критерий Коши.</b> Последовательность сходится ⇔ её члены сколь угодно близки друг к другу при больших номерах.</li>
+      </ol>
+      <div class="lab">
+        <div class="cap"><b>Два милиционера: \(-\tfrac1n \le \tfrac{\sin n}{n} \le \tfrac1n\)</b><span>Средняя последовательность зажата и тоже идёт к 0</span></div>
+        <canvas id="cvSq" aria-label="Три последовательности сходятся к нулю"></canvas>
+        <div class="ctrl"><button class="pri" id="sqPlay" type="button">▶ Показать</button></div>
+      </div>
+      <div class="lab">
+        <div class="cap"><b>Вейерштрасс на примере задачи 10</b><span>\(b_n=\max\{a_1,\dots,a_n\}\) только растёт и упирается в потолок</span></div>
+        <canvas id="cvMax" aria-label="Последовательность и её бегущий максимум"></canvas>
+        <div class="ctrl"><button class="pri" id="maxPlay" type="button">▶ Показать</button></div>
+        <div class="readout">серые точки — aₙ (сходится к L), бирюзовая лесенка — bₙ = max: не убывает и ограничена ⇒ сходится</div>
+      </div>
+    </section>
+
+    <!-- 4 -->
+    <section class="lesson" id="complex" data-t="Комплексные числа">
+      <p class="num">Глава 4</p>
+      <h2>Комплексное число, модуль и аргумент</h2>
+      <p>Комплексное число \(z=a+ib\), где \(i^2=-1\), — это точка \((a;b)\) на плоскости. \(a=\operatorname{Re}z\) — по горизонтали, \(b=\operatorname{Im}z\) — по вертикали.</p>
+      <ul>
+        <li><b>Модуль</b> \(|z|=\sqrt{a^2+b^2}\) — расстояние от нуля до точки.</li>
+        <li><b>Аргумент</b> \(\operatorname{Arg}z\) — угол от положительной полуоси Re до луча на точку, против часовой стрелки.</li>
+        <li><b>Сопряжённое</b> \(\bar z=a-ib\) — отражение относительно оси Re. Полезно: \(z\bar z=|z|^2\).</li>
+      </ul>
+      <div class="warn"><b class="t">Важно для вашей контрольной</b><p>Аргумент берётся из промежутка \([0;\,2\pi)\). Значит, у точек ниже оси Re аргумент больше \(\pi\): \(\operatorname{Arg}(1-i)=\tfrac{7\pi}{4}\), а не \(-\tfrac\pi4\). У нуля аргумента нет.</p></div>
+      <h3>Три формы записи</h3>
+      \[ z = a+ib \;=\; r(\cos\varphi+i\sin\varphi) \;=\; re^{i\varphi},\qquad r=|z|,\ \varphi=\operatorname{Arg}z. \]
+      <p>Формула Эйлера \(e^{i\varphi}=\cos\varphi+i\sin\varphi\) связывает их. Например, \(e^{i\pi}=-1\), \(e^{i\pi/2}=i\).</p>
+      <div class="lab">
+        <div class="cap"><b>Перетащите точку</b><span>Видно, как меняются модуль и аргумент</span></div>
+        <canvas id="cvZ" class="sq" aria-label="Комплексная плоскость с перетаскиваемой точкой"></canvas>
+        <div class="readout" id="zTxt"></div>
+      </div>
+      <h3>Аргументы, которые стоит помнить</h3>
+      <div class="tw"><table class="cheat">
+        <tr><th>Число</th><th>Модуль</th><th>Аргумент</th><th>Показательная форма</th></tr>
+        <tr><td>\(1+i\)</td><td>\(\sqrt2\)</td><td>\(\pi/4\)</td><td>\(\sqrt2\,e^{i\pi/4}\)</td></tr>
+        <tr><td>\(1-i\)</td><td>\(\sqrt2\)</td><td>\(7\pi/4\)</td><td>\(\sqrt2\,e^{i7\pi/4}\)</td></tr>
+        <tr><td>\(1+i\sqrt3\)</td><td>\(2\)</td><td>\(\pi/3\)</td><td>\(2e^{i\pi/3}\)</td></tr>
+        <tr><td>\(\sqrt3+i\)</td><td>\(2\)</td><td>\(\pi/6\)</td><td>\(2e^{i\pi/6}\)</td></tr>
+        <tr><td>\(i\)</td><td>\(1\)</td><td>\(\pi/2\)</td><td>\(e^{i\pi/2}\)</td></tr>
+        <tr><td>\(-1\)</td><td>\(1\)</td><td>\(\pi\)</td><td>\(e^{i\pi}\)</td></tr>
+        <tr><td>\(-i\)</td><td>\(1\)</td><td>\(3\pi/2\)</td><td>\(e^{i3\pi/2}\)</td></tr>
+      </table></div>
+      <div class="ex"><b class="t">Как находить аргумент</b><p>Нарисуйте точку, найдите острый угол \(\alpha=\operatorname{arctg}\left|\tfrac ba\right|\) и поправьте по четверти: I четверть — \(\alpha\); II — \(\pi-\alpha\); III — \(\pi+\alpha\); IV — \(2\pi-\alpha\).</p></div>
+    </section>
+
+    <!-- 5 -->
+    <section class="lesson" id="muavr" data-t="Умножение и Муавр">
+      <p class="num">Глава 5</p>
+      <h2>Умножение, деление и формула Муавра</h2>
+      <p>В алгебраической форме умножают как обычные скобки, заменяя \(i^2\) на \(-1\): \((1+i)^2=1+2i+i^2=2i\). Делят, домножая на сопряжённое знаменателя.</p>
+      <div class="key"><b class="t">Главное правило</b>
+        <p>При умножении модули перемножаются, аргументы складываются. При делении модули делятся, аргументы вычитаются.</p>
+        \[ r_1e^{i\varphi_1}\cdot r_2e^{i\varphi_2}=r_1r_2\,e^{i(\varphi_1+\varphi_2)},\qquad \bigl(re^{i\varphi}\bigr)^n=r^ne^{in\varphi}\ \ \text{(Муавр)}. \]
+      </div>
+      <p>Геометрически: умножение на \(z\) — это поворот на угол \(\operatorname{Arg}z\) и растяжение в \(|z|\) раз. Степень \(z^n\) — повторить это \(n\) раз.</p>
+      <div class="lab">
+        <div class="cap"><b>Степени \(z, z^2, \dots, z^n\)</b><span>Каждый шаг — поворот на φ и умножение длины на r</span></div>
+        <canvas id="cvPow" class="sq" aria-label="Степени комплексного числа на плоскости"></canvas>
+        <div class="ctrl">
+          <label>r <input type="range" id="powR" min="70" max="125" value="93"><output id="powRO"></output></label>
+          <label>φ <input type="range" id="powF" min="0" max="360" value="45"><output id="powFO"></output></label>
+          <label>n <input type="range" id="powN" min="1" max="12" value="8"><output id="powNO"></output></label>
+          <button class="pri" id="powPlay" type="button">▶ Анимация</button>
+        </div>
+        <div class="readout" id="powTxt"></div>
+      </div>
+      <div class="ex"><b class="t">Пример</b><p>\((1-i)^8=(\sqrt2)^8e^{i\cdot 8\cdot 7\pi/4}=16e^{i14\pi}=16\), потому что \(14\pi\) — целое число оборотов.</p></div>
+      <div class="warn"><b class="t">Как приводить угол</b><p>После умножения угол может выйти за \([0;2\pi)\). Отнимайте или прибавляйте \(2\pi\), пока не попадёте в промежуток: \(\tfrac{25\pi}{3}=8\pi+\tfrac\pi3\Rightarrow\tfrac\pi3\).</p></div>
+    </section>
+
+    <!-- 6 -->
+    <section class="lesson" id="roots" data-t="Корни n-й степени">
+      <p class="num">Глава 6</p>
+      <h2>Корни n-й степени</h2>
+      <p>Уравнение \(z^n=w\) (при \(w\ne0\)) имеет ровно \(n\) комплексных корней. Если \(w=\rho e^{i\theta}\), то</p>
+      \[ z_k=\sqrt[n]{\rho}\;e^{\,i\frac{\theta+2\pi k}{n}},\qquad k=0,1,\dots,n-1. \]
+      <p>Все корни лежат на окружности радиуса \(\sqrt[n]\rho\) и образуют <b>правильный n-угольник</b>: соседние отличаются поворотом на \(\tfrac{2\pi}{n}\).</p>
+      <div class="key"><b class="t">Главный факт для задачи 1</b><p>Сумма всех корней \(z^n=w\) при \(n\ge2\) равна 0: вершины правильного многоугольника уравновешивают друг друга относительно центра.</p></div>
+      <div class="lab">
+        <div class="cap"><b>Корни \(z^n = w\) и их сумма</b><span>Векторы корней, сложенные цепочкой, возвращаются в центр</span></div>
+        <canvas id="cvRoots" class="sq" aria-label="Корни n-й степени на окружности"></canvas>
+        <div class="ctrl">
+          <label>n <input type="range" id="rtN" min="2" max="9" value="6"><output id="rtNO"></output></label>
+          <span>w:</span>
+          <button type="button" class="rtw" data-w="-1" aria-pressed="true">−1</button>
+          <button type="button" class="rtw" data-w="1" aria-pressed="false">1</button>
+          <button type="button" class="rtw" data-w="i" aria-pressed="false">i</button>
+          <button type="button" class="rtw" data-w="8" aria-pressed="false">8</button>
+          <button type="button" id="rtShift" aria-pressed="false">сдвиг z−5 (задача 1)</button>
+          <button class="pri" id="rtPlay" type="button">▶ Сложить корни</button>
+        </div>
+        <div class="readout" id="rtTxt"></div>
+      </div>
+      <div class="ex"><b class="t">Пример</b><p>\(z^3=8\): \(8=8e^{i0}\), корни \(2e^{i\cdot 2\pi k/3}\): \(2,\ -1+i\sqrt3,\ -1-i\sqrt3\). Сумма: \(2-1-1=0\).</p></div>
+    </section>
+
+    <!-- 7 -->
+    <section class="lesson" id="power" data-t="Логарифм и степень">
+      <p class="num">Глава 7</p>
+      <h2>Комплексный логарифм и комплексная степень</h2>
+      <p>Из \(z=re^{i\varphi}\) следует \(\ln z\) «=» \(\ln r + i\varphi\). Но угол определён с точностью до \(2\pi k\), поэтому логарифмов бесконечно много. <b>Главное значение</b> берёт угол из выбранного промежутка (у вас \([0;2\pi)\)):</p>
+      \[ \operatorname{Ln}z=\ln|z|+i\operatorname{Arg}z. \]
+      <p>Степень с комплексным показателем определяют через экспоненту:</p>
+      \[ z^{w}=e^{\,w\cdot\operatorname{Ln}z}. \]
+      <div class="ex"><b class="t">Пример</b><p>\(i^i=e^{i\operatorname{Ln} i}=e^{i\cdot i\pi/2}=e^{-\pi/2}\approx0{,}208\). Вещественное число!</p></div>
+      <div class="key"><b class="t">Алгоритм</b>
+        <ol><li>Запишите основание в виде \(re^{i\varphi}\), \(\varphi\in[0;2\pi)\).</li><li>\(\operatorname{Ln}z=\ln r+i\varphi\).</li><li>Умножьте на показатель \(w\), раскрыв скобки (\(i^2=-1\)).</li><li>\(e^{x+iy}=e^x(\cos y+i\sin y)\).</li></ol>
+      </div>
+    </section>
+
+    <!-- 8 -->
+    <section class="lesson" id="sets" data-t="Множества на плоскости">
+      <p class="num">Глава 8</p>
+      <h2>Множества на комплексной плоскости</h2>
+      <ul>
+        <li>\(|z|=R\) — окружность; \(|z|\le R\) — круг с границей; \(|z|&lt;R\) — без границы.</li>
+        <li>\(|z-z_0|&lt;R\) — круг с центром \(z_0\).</li>
+        <li>\(\alpha&lt;\operatorname{Arg}z\le\beta\) — угол (сектор) между двумя лучами из нуля. Луч со знаком «≤» входит, со знаком «&lt;» — нет. Сам ноль не входит никогда.</li>
+        <li>\(\operatorname{Re}z&gt;0\) — правая полуплоскость, \(\operatorname{Im}z\ge1\) — выше прямой \(y=1\) вместе с ней.</li>
+      </ul>
+      <div class="lab">
+        <div class="cap"><b>Задача 2: \(\tfrac\pi6&lt;\operatorname{Arg}z\le\tfrac\pi2,\ -3&lt;|z|^2\le1\)</b><span>Сплошная граница входит, пунктир — нет</span></div>
+        <canvas id="cvSet" class="sq" aria-label="Сектор единичного круга от 30 до 90 градусов"></canvas>
+      </div>
+      <div class="warn"><b class="t">Ловушка</b><p>Условие \(-3&lt;|z|^2\) выполнено всегда, потому что \(|z|^2\ge0\). Значит, остаётся только \(|z|\le1\). Не рисуйте «отрицательный радиус».</p></div>
+    </section>
+
+    <!-- 9 -->
+    <section class="lesson" id="cseq" data-t="Комплексные последовательности">
+      <p class="num">Глава 9</p>
+      <h2>Комплексные последовательности</h2>
+      <p>Определение предела то же самое, только \(|\cdot|\) — это модуль комплексного числа, а окрестность — круг, а не интервал.</p>
+      <div class="key"><b class="t">Как проверять</b><p>\(z_n\to z\) ⇔ \(\operatorname{Re}z_n\to\operatorname{Re}z\) и \(\operatorname{Im}z_n\to\operatorname{Im}z\). В частности, \(z_n\to0\) ⇔ \(|z_n|\to0\).</p></div>
+      <div class="lab">
+        <div class="cap"><b>Задача 8: \(a_1=1,\ a_{n+1}=\dfrac{a_n}{1+i}\)</b><span>Каждый шаг: поворот на −45° и сжатие в √2 раз</span></div>
+        <canvas id="cvSp" class="sq" aria-label="Спираль точек, сходящаяся к нулю"></canvas>
+        <div class="ctrl"><button class="pri" id="spPlay" type="button">▶ Показать</button></div>
+        <div class="readout" id="spTxt"></div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="lesson" id="test" data-t="Разбор контрольной">
+      <p class="num">Глава 10</p>
+      <h2>Разбор контрольной: все 10 задач</h2>
+      <p>Сначала попробуйте решить сами, потом откройте решение. Справа в заголовке — ответ.</p>
+
+      <details class="sol"><summary>1. Сумма корней \((z-5)^6=-1\)<span class="ans">30</span></summary><div class="body steps">
+        <p class="step">Замена \(w=z-5\). Уравнение \(w^6=-1\) имеет 6 корней — вершины правильного шестиугольника на единичной окружности.</p>
+        <p class="step">Сумма корней \(w^6=-1\) равна 0 (глава 6).</p>
+        <p class="step">\(z_k=w_k+5\), поэтому \(\sum z_k=\sum w_k+6\cdot5=0+30=30\).</p>
+        <p>Проверка через Виета: \((z-5)^6+1\) — многочлен со старшими членами \(z^6-30z^5+\dots\), сумма корней равна \(30\).</p>
+      </div></details>
+
+      <details class="sol"><summary>2. Множество на плоскости<span class="ans">сектор круга</span></summary><div class="body steps">
+        <p class="step">\(|z|^2&gt;-3\) верно всегда, остаётся \(|z|\le1\) — единичный круг с границей.</p>
+        <p class="step">\(\tfrac\pi6&lt;\operatorname{Arg}z\le\tfrac\pi2\) — угол между лучом под 30° (не входит) и лучом под 90° (входит, это положительная полуось Im).</p>
+        <p class="step">Ответ: сектор единичного круга от 30° до 90°. Дуга входит, луч Im до точки \(i\) входит, луч под 30° не входит, точка 0 не входит. Картинка — в главе 8.</p>
+      </div></details>
+
+      <details class="sol"><summary>3. \(\dfrac{(1+i)^2(1-i)^8}{(1+i\sqrt3)^5}\)<span class="ans">−√3/2 + i/2</span></summary><div class="body steps">
+        <p class="step">\((1+i)^2=2i\).</p>
+        <p class="step">\((1-i)^8=(\sqrt2e^{i7\pi/4})^8=16e^{i14\pi}=16\).</p>
+        <p class="step">\((1+i\sqrt3)^5=(2e^{i\pi/3})^5=32e^{i5\pi/3}\).</p>
+        <p class="step">Собираем дробь и делим модули и углы:</p>\[ \frac{2i\cdot16}{32e^{i5\pi/3}}=\frac{i}{e^{i5\pi/3}}=e^{i\pi/2}e^{-i5\pi/3}=e^{-i7\pi/6}=e^{i5\pi/6}. \]
+        <p class="step">\(e^{i5\pi/6}=\cos\tfrac{5\pi}6+i\sin\tfrac{5\pi}6=-\tfrac{\sqrt3}{2}+\tfrac12 i\).</p>
+      </div></details>
+
+      <details class="sol"><summary>4. \(\left(\tfrac{1+i}{\sqrt2}\right)^{1-i}\)<span class="ans">e^{π/4}(√2/2 + i√2/2)</span></summary><div class="body steps">
+        <p class="step">\(\tfrac{1+i}{\sqrt2}=e^{i\pi/4}\): модуль 1, аргумент \(\pi/4\).</p>
+        <p class="step">\(\operatorname{Ln}e^{i\pi/4}=\ln1+i\tfrac\pi4=i\tfrac\pi4\).</p>
+        <p class="step">\((1-i)\cdot i\tfrac\pi4=i\tfrac\pi4-i^2\tfrac\pi4=\tfrac\pi4+i\tfrac\pi4\).</p>
+        <p class="step">Возвращаемся к виду \(a+ib\):</p>\[ e^{\pi/4+i\pi/4}=e^{\pi/4}\Bigl(\cos\tfrac\pi4+i\sin\tfrac\pi4\Bigr)=e^{\pi/4}\tfrac{\sqrt2}{2}(1+i)\approx1{,}55+1{,}55i. \]
+      </div></details>
+
+      <details class="sol"><summary>5. \(\lim\dfrac{\sqrt{n^3+2n}-\sqrt{n^3+1}}{3}\)<span class="ans">0</span></summary><div class="body steps">
+        <p class="step">Домножаем на сопряжённое:</p>\[ \sqrt{n^3+2n}-\sqrt{n^3+1}=\frac{2n-1}{\sqrt{n^3+2n}+\sqrt{n^3+1}}. \]
+        <p class="step">Числитель растёт как \(2n\), знаменатель — как \(2n^{3/2}\). Отношение \(\sim\frac{1}{\sqrt n}\to0\).</p>
+        <p class="step">Делим на 3 — всё равно 0.</p>
+      </div></details>
+
+      <details class="sol"><summary>6. \(\lim\dfrac{n^3+2n+1}{n^3+n+4}\)<span class="ans">1</span></summary><div class="body steps">
+        <p class="step">Делим на \(n^3\):</p>\[ \frac{1+2/n^2+1/n^3}{1+1/n^2+4/n^3}\to\frac11=1. \]
+      </div></details>
+
+      <details class="sol"><summary>7. \(\lim\dfrac{\sqrt n\cos n+n}{2n+\sin n}\)<span class="ans">1/2</span></summary><div class="body steps">
+        <p class="step">Делим на \(n\): \(\dfrac{\frac{\cos n}{\sqrt n}+1}{2+\frac{\sin n}{n}}\).</p>
+        <p class="step">\(\frac{\cos n}{\sqrt n}\to0\) и \(\frac{\sin n}{n}\to0\): ограниченная на бесконечно малую.</p>
+        <p class="step">Ответ \(\frac{0+1}{2+0}=\frac12\).</p>
+      </div></details>
+
+      <details class="sol"><summary>8. \(a_1=1,\ a_{n+1}=\frac{a_n}{1+i}\)<span class="ans">0</span></summary><div class="body steps">
+        <p class="step">Это геометрическая прогрессия: \(a_n=\left(\frac1{1+i}\right)^{n-1}\).</p>
+        <p class="step">\(\left|\frac1{1+i}\right|=\frac1{\sqrt2}&lt;1\), значит \(|a_n|=\left(\frac1{\sqrt2}\right)^{n-1}\to0\).</p>
+        <p class="step">Модуль идёт к нулю ⇒ \(a_n\to0\). Картинка — в главе 9.</p>
+      </div></details>
+
+      <details class="sol"><summary>9. \(\lim\limits_{x\to2}\dfrac{x^2-4}{x-2}\)<span class="ans">4</span></summary><div class="body steps">
+        <p class="step">\(x^2-4=(x-2)(x+2)\), сокращаем (при \(x\ne2\)).</p>
+        <p class="step">\(\lim_{x\to2}(x+2)=4\).</p>
+      </div></details>
+
+      <details class="sol"><summary>10. Если \(a_n\to L\), то \(b_n=\max\{a_1,\dots,a_n\}\) сходится<span class="ans">доказательство</span></summary><div class="body steps">
+        <p class="step"><b>\(b_n\) не убывает.</b> \(b_{n+1}=\max\{b_n,\,a_{n+1}\}\ge b_n\): максимум по большему набору не меньше.</p>
+        <p class="step"><b>\(b_n\) ограничена сверху.</b> Сходящаяся \(a_n\) ограничена: \(|a_k|\le M\) для всех \(k\) (теорема 2). Тогда \(b_n\le M\).</p>
+        <p class="step"><b>Вывод.</b> Неубывающая и ограниченная сверху последовательность сходится по теореме Вейерштрасса. ∎</p>
+        <p>Можно добавить, что предел \(b_n\) равен \(\sup_k a_k\), но для доказательства сходимости это не нужно.</p>
+      </div></details>
+    </section>
+
+    <!-- 11 -->
+    <section class="lesson" id="quiz" data-t="Проверь себя">
+      <p class="num">Глава 11</p>
+      <h2>Проверь себя</h2>
+      <p>Нажмите на вариант — сразу увидите, верно ли. <span class="score" id="score"></span></p>
+      <div class="quiz" id="quizBox"></div>
+    </section>
+
+    <!-- 12 -->
+    <section class="lesson" id="cheat" data-t="Шпаргалка">
+      <p class="num">Глава 12</p>
+      <h2>Шпаргалка на одну страницу</h2>
+      <div class="tw"><table class="cheat">
+        <tr><th>Тема</th><th>Формула или правило</th></tr>
+        <tr><td>Предел</td><td>\(\forall\varepsilon&gt;0\ \exists N\ \forall n&gt;N:\ |a_n-a|&lt;\varepsilon\)</td></tr>
+        <tr><td>Многочлены</td><td>делим на старшую степень</td></tr>
+        <tr><td>Корни</td><td>\(\sqrt A-\sqrt B=\frac{A-B}{\sqrt A+\sqrt B}\)</td></tr>
+        <tr><td>sin, cos</td><td>ограниченная × бесконечно малая → 0</td></tr>
+        <tr><td>Прогрессия</td><td>\(q^n\to0\) при \(|q|&lt;1\)</td></tr>
+        <tr><td>Вейерштрасс</td><td>монотонная + ограниченная ⇒ сходится</td></tr>
+        <tr><td>Модуль</td><td>\(|a+ib|=\sqrt{a^2+b^2}\), \(z\bar z=|z|^2\)</td></tr>
+        <tr><td>Аргумент</td><td>из \([0;2\pi)\); ниже оси Re — больше \(\pi\)</td></tr>
+        <tr><td>Эйлер</td><td>\(e^{i\varphi}=\cos\varphi+i\sin\varphi\)</td></tr>
+        <tr><td>Муавр</td><td>\((re^{i\varphi})^n=r^ne^{in\varphi}\)</td></tr>
+        <tr><td>Корни n-й степени</td><td>\(z_k=\sqrt[n]\rho\,e^{i(\theta+2\pi k)/n}\), сумма = 0</td></tr>
+        <tr><td>Логарифм</td><td>\(\operatorname{Ln}z=\ln|z|+i\operatorname{Arg}z\)</td></tr>
+        <tr><td>Степень</td><td>\(z^w=e^{w\operatorname{Ln}z}\)</td></tr>
+      </table></div>
+    </section>
+    <footer>Конспект к контрольной «Комплексные числа и пределы». Аргумент везде берётся из [0; 2π), как в условии контрольной.</footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  // ---------- оглавление ----------
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.lesson'));
+  var toc = document.getElementById('toc'), mob = document.getElementById('mobnav');
+  secs.forEach(function (s, i) {
+    var li = document.createElement('li');
+    li.innerHTML = '<a href="#' + s.id + '"><span class="n">' + (i + 1) + '</span>' + s.dataset.t + '</a>';
+    toc.appendChild(li);
+    var a = document.createElement('a'); a.href = '#' + s.id; a.textContent = (i + 1) + '. ' + s.dataset.t; mob.appendChild(a);
+  });
+  var links = document.querySelectorAll('nav.toc a, .mobnav a');
+  function mark() {
+    var cur = secs[0].id;
+    secs.forEach(function (s) { if (s.getBoundingClientRect().top < 140) cur = s.id; });
+    links.forEach(function (a) {
+      var on = a.getAttribute('href') === '#' + cur;
+      a.classList.toggle('on', on);
+      if (on && a.parentNode === mob && mob.scrollWidth > mob.clientWidth) mob.scrollLeft = a.offsetLeft - 40;
+    });
+  }
+  window.addEventListener('scroll', mark, { passive: true }); mark();
+
+  // ---------- общие функции рисования ----------
+  var reduced = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  function col() { return { fg: css('--fg'), muted: css('--muted'), grid: css('--grid'), line: css('--line'), teal: css('--teal'), tealbg: css('--tealbg'), orange: css('--orange'), blue: css('--blue'), bluebg: css('--bluebg'), dot: css('--dot'), mono: css('--mono') || 'monospace', serif: css('--serif') || 'serif' }; }
+  var redraws = [];
+  function reg(f) { redraws.push(f); f(); }
+  function redrawAll() { redraws.forEach(function (f) { f(); }); }
+  window.addEventListener('resize', redrawAll);
+  if (window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redrawAll);
+  new MutationObserver(redrawAll).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(redrawAll);
+
+  function prep(cv) {
+    var dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    var W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    var c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, h);
+    return { c: c, w: w, h: h };
+  }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function fmt(v, d) { return (Math.abs(v) < 1e-9 ? 0 : v).toFixed(d === undefined ? 2 : d).replace('.', ','); }
+  function argOf(a, b) { var t = Math.atan2(b, a); if (t < 0) t += 2 * Math.PI; return t; }
+  function piFrac(t) {
+    var dens = [1, 2, 3, 4, 6, 12];
+    for (var i = 0; i < dens.length; i++) {
+      var m = dens[i], k = t / Math.PI * m, rk = Math.round(k);
+      if (Math.abs(k - rk) < 1e-3) {
+        if (rk === 0) return '0';
+        var g = gcd(rk, m), num = rk / g, den = m / g;
+        return (num === 1 ? '' : num) + 'π' + (den === 1 ? '' : '/' + den);
+      }
+    }
+    return fmt(t / Math.PI, 3) + 'π';
+  }
+  function gcd(a, b) { return b ? gcd(b, a % b) : Math.abs(a); }
+  // комплексная плоскость: R — сколько единиц помещается от центра до края по меньшей стороне
+  function cplane(cv, R, cx, cy) {
+    var p = prep(cv), c = p.c, w = p.w, h = p.h, K = col();
+    var s = Math.min(w, h) / (2 * R);
+    var ox = w / 2 - (cx || 0) * s, oy = h / 2 + (cy || 0) * s;
+    var X = function (x) { return ox + x * s; }, Y = function (y) { return oy - y * s; };
+    var step = R > 6 ? 2 : (R > 2.5 ? 1 : 0.5);
+    c.lineWidth = 1; c.strokeStyle = K.grid;
+    var x0 = Math.floor((0 - ox) / s / step) * step, x1 = (w - ox) / s, y0 = Math.floor((oy - h) / s / step) * step, y1 = oy / s;
+    for (var x = x0; x <= x1; x += step) { c.beginPath(); c.moveTo(X(x), 0); c.lineTo(X(x), h); c.stroke(); }
+    for (var y = y0; y <= y1; y += step) { c.beginPath(); c.moveTo(0, Y(y)); c.lineTo(w, Y(y)); c.stroke(); }
+    c.strokeStyle = K.muted; c.lineWidth = 1.2;
+    c.beginPath(); c.moveTo(0, Y(0)); c.lineTo(w, Y(0)); c.moveTo(X(0), 0); c.lineTo(X(0), h); c.stroke();
+    c.fillStyle = K.muted; c.font = '11px ' + K.mono; c.textAlign = 'center';
+    for (x = x0; x <= x1; x += step) if (Math.abs(x) > 1e-9 && Math.abs(x % 1) < 1e-9) c.fillText(String(x), X(x), Y(0) + 14);
+    c.textAlign = 'right';
+    for (y = y0; y <= y1; y += step) if (Math.abs(y) > 1e-9 && Math.abs(y % 1) < 1e-9) c.fillText(y + 'i', X(0) - 5, Y(y) + 4);
+    c.font = 'italic 13px ' + K.serif; c.textAlign = 'right'; c.fillText('Re', w - 6, Y(0) - 6); c.textAlign = 'left'; c.fillText('Im', X(0) + 6, 14);
+    return { c: c, w: w, h: h, X: X, Y: Y, s: s, K: K, ox: ox, oy: oy };
+  }
+  function dot(c, x, y, r, fill) { c.fillStyle = fill; c.beginPath(); c.arc(x, y, r, 0, 2 * Math.PI); c.fill(); }
+  function arrow(c, x1, y1, x2, y2, color, wdt) {
+    c.strokeStyle = color; c.fillStyle = color; c.lineWidth = wdt || 2;
+    c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.stroke();
+    var a = Math.atan2(y2 - y1, x2 - x1), L = Math.min(9, Math.hypot(x2 - x1, y2 - y1) * 0.4);
+    if (L < 2) return;
+    c.beginPath(); c.moveTo(x2, y2); c.lineTo(x2 - L * Math.cos(a - 0.4), y2 - L * Math.sin(a - 0.4)); c.lineTo(x2 - L * Math.cos(a + 0.4), y2 - L * Math.sin(a + 0.4)); c.closePath(); c.fill();
+  }
+  function anim(ms, step, done) {
+    if (reduced) { step(1); if (done) done(); return { stop: function () {} }; }
+    var t0 = performance.now(), id, alive = true;
+    function f(now) { if (!alive) return; var k = Math.min(1, (now - t0) / ms); step(k); if (k < 1) id = requestAnimationFrame(f); else if (done) done(); }
+    id = requestAnimationFrame(f);
+    return { stop: function () { alive = false; cancelAnimationFrame(id); } };
+  }
+
+  // ---------- 1. ε–N ----------
+  (function () {
+    var cv = document.getElementById('cvEps'), R = document.getElementById('epsR'), O = document.getElementById('epsO'), T = document.getElementById('epsTxt'), B = document.getElementById('epsPlay');
+    var HI = Math.log10(0.5), LO = Math.log10(0.002), t = +R.value / 1000, run = null;
+    function eps() { return Number(Math.pow(10, HI + (LO - HI) * t).toPrecision(2)); }
+    function draw() {
+      var e = eps(), N = Math.ceil(1 / e - 1e-9), xmax = Math.max(10, Math.ceil(2.2 * N)), ymax = Math.min(1.05, 4 * e), ymin = -1.5 * e;
+      var p = prep(cv), c = p.c, w = p.w, h = p.h, K = col(), L = 46, Rr = 12, Tt = 22, Bb = 26, pw = w - L - Rr, ph = h - Tt - Bb;
+      var X = function (n) { return L + n / xmax * pw; }, Y = function (v) { return Tt + (ymax - v) / (ymax - ymin) * ph; };
+      c.fillStyle = K.tealbg; c.fillRect(L, Y(e), pw, Y(-e) - Y(e));
+      c.setLineDash([5, 4]); c.strokeStyle = K.teal; c.lineWidth = 1.2;
+      c.beginPath(); c.moveTo(L, Y(e)); c.lineTo(L + pw, Y(e)); c.moveTo(L, Y(-e)); c.lineTo(L + pw, Y(-e)); c.stroke(); c.setLineDash([]);
+      c.strokeStyle = K.fg; c.lineWidth = 1.4; c.beginPath(); c.moveTo(L, Y(0)); c.lineTo(L + pw, Y(0)); c.stroke();
+      c.strokeStyle = K.muted; c.lineWidth = 1; c.beginPath(); c.moveTo(L, Tt); c.lineTo(L, Tt + ph); c.lineTo(L + pw, Tt + ph); c.stroke();
+      c.font = '11px ' + K.mono; c.fillStyle = K.muted; c.textAlign = 'right';
+      c.fillText(fmt(ymax, ymax < 0.1 ? 3 : 2), L - 5, Tt + 9); c.fillText('0', L - 5, Y(0) + 4);
+      c.textAlign = 'right'; c.fillText('n →', L + pw, Tt + ph + 16);
+      c.fillStyle = K.teal; c.font = 'italic 13px ' + K.serif; c.fillText('+ε', L + pw - 4, Y(e) - 5); c.fillText('−ε', L + pw - 4, Y(-e) + 15);
+      var xN = X(N); c.strokeStyle = K.orange; c.lineWidth = 2; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(xN, Tt - 4); c.lineTo(xN, Tt + ph); c.stroke(); c.setLineDash([]);
+      c.fillStyle = K.orange; c.font = '600 12px ' + K.mono; c.textAlign = 'center'; c.fillText('N = ' + N, clamp(xN, L + 30, L + pw - 30), Tt - 8);
+      var r = clamp(pw / xmax * 0.38, 1.4, 5);
+      c.save(); c.beginPath(); c.rect(L, Tt - 2, pw + 2, ph + 4); c.clip();
+      for (var pass = 0; pass < 2; pass++) {
+        c.fillStyle = pass ? K.teal : K.dot; c.beginPath();
+        for (var k = 1; k <= xmax; k++) { if ((k > N) !== (pass === 1)) continue; var a = 1 / k; if (a > ymax) continue; c.moveTo(X(k) + r, Y(a)); c.arc(X(k), Y(a), r, 0, 2 * Math.PI); }
+        c.fill();
+      }
+      c.restore();
+      O.textContent = fmt(e, e < 0.01 ? 4 : 3).replace(/0+$/, '').replace(/,$/, '');
+      T.textContent = 'ε = ' + O.textContent + '  ⇒  N = ⌈1/ε⌉ = ' + N + '.  Все точки с номером n > ' + N + ' (бирюзовые) лежат в полосе |aₙ − 0| < ε.';
+      R.value = Math.round(t * 1000);
+    }
+    R.addEventListener('input', function () { if (run) { run.stop(); run = null; B.textContent = '▶ Уменьшать ε'; } t = R.value / 1000; draw(); });
+    B.addEventListener('click', function () {
+      if (run) { run.stop(); run = null; B.textContent = '▶ Уменьшать ε'; return; }
+      B.textContent = '■ Стоп';
+      run = anim(9000, function (k) { t = k; draw(); }, function () { run = null; B.textContent = '▶ Уменьшать ε'; });
+    });
+    reg(draw);
+  })();
+
+  // ---------- 3a. два милиционера ----------
+  (function () {
+    var cv = document.getElementById('cvSq'), shown = 40;
+    function draw() {
+      var p = prep(cv), c = p.c, w = p.w, h = p.h, K = col(), L = 40, Rr = 12, Tt = 14, Bb = 24, pw = w - L - Rr, ph = h - Tt - Bb, M = 40;
+      var X = function (n) { return L + n / (M + 1) * pw; }, Y = function (v) { return Tt + (1.05 - v) / 2.1 * ph; };
+      c.strokeStyle = K.grid; c.lineWidth = 1; [-1, -0.5, 0.5, 1].forEach(function (v) { c.beginPath(); c.moveTo(L, Y(v)); c.lineTo(L + pw, Y(v)); c.stroke(); });
+      c.strokeStyle = K.fg; c.lineWidth = 1.3; c.beginPath(); c.moveTo(L, Y(0)); c.lineTo(L + pw, Y(0)); c.stroke();
+      c.fillStyle = K.muted; c.font = '11px ' + K.mono; c.textAlign = 'right'; ['1', '0', '−1'].forEach(function (s, i) { c.fillText(s, L - 5, Y(1 - i) + 4); });
+      c.textAlign = 'right'; c.fillText('n →', L + pw, h - 6);
+      for (var n = 1; n <= Math.min(shown, M); n++) {
+        dot(c, X(n), Y(1 / n), 3, K.orange); dot(c, X(n), Y(-1 / n), 3, K.orange); dot(c, X(n), Y(Math.sin(n) / n), 3.6, K.teal);
+      }
+      c.font = '12px ' + K.mono; c.textAlign = 'right';
+      c.fillStyle = K.orange; c.fillText('1/n и −1/n — «милиционеры»', L + pw - 4, Y(0.62));
+      c.fillStyle = K.teal; c.fillText('sin(n)/n — зажата между ними', L + pw - 4, Y(0.62) + 16);
+    }
+    document.getElementById('sqPlay').addEventListener('click', function () { anim(3500, function (k) { shown = Math.max(1, Math.round(k * 40)); draw(); }); });
+    reg(draw);
+  })();
+
+  // ---------- 3b. max ----------
+  (function () {
+    var cv = document.getElementById('cvMax'), shown = 40, M = 40, Lm = 1;
+    var a = []; for (var n = 1; n <= M; n++) a.push(Lm + 1.6 * Math.sin(1.9 * n + 0.4) / Math.sqrt(n));
+    function draw() {
+      var p = prep(cv), c = p.c, w = p.w, h = p.h, K = col(), L = 40, Rr = 12, Tt = 14, Bb = 24, pw = w - L - Rr, ph = h - Tt - Bb;
+      var lo = -0.6, hi = 2.4;
+      var X = function (n) { return L + n / (M + 1) * pw; }, Y = function (v) { return Tt + (hi - v) / (hi - lo) * ph; };
+      c.strokeStyle = K.orange; c.setLineDash([6, 4]); c.lineWidth = 1.3; c.beginPath(); c.moveTo(L, Y(Lm)); c.lineTo(L + pw, Y(Lm)); c.stroke(); c.setLineDash([]);
+      c.fillStyle = K.orange; c.font = 'italic 13px ' + K.serif; c.textAlign = 'right'; c.fillText('L', L - 6, Y(Lm) + 4);
+      c.strokeStyle = K.muted; c.lineWidth = 1; c.beginPath(); c.moveTo(L, Tt); c.lineTo(L, Tt + ph); c.lineTo(L + pw, Tt + ph); c.stroke();
+      var b = -Infinity; c.strokeStyle = K.teal; c.lineWidth = 2.2; c.beginPath();
+      for (var i = 0; i < Math.min(shown, M); i++) {
+        var nb = Math.max(b, a[i]);
+        if (i === 0) c.moveTo(X(1), Y(nb)); else { c.lineTo(X(i + 1), Y(b)); c.lineTo(X(i + 1), Y(nb)); }
+        b = nb;
+      }
+      c.stroke();
+      for (i = 0; i < Math.min(shown, M); i++) dot(c, X(i + 1), Y(a[i]), 3, K.dot);
+      c.font = '12px ' + K.mono; c.fillStyle = K.teal; c.textAlign = 'left'; c.fillText('bₙ = max{a₁…aₙ}', L + 8, Tt + 12);
+    }
+    document.getElementById('maxPlay').addEventListener('click', function () { anim(4000, function (k) { shown = Math.max(1, Math.round(k * M)); draw(); }); });
+    reg(draw);
+  })();
+
+  // ---------- 4. перетаскиваемая точка ----------
+  (function () {
+    var cv = document.getElementById('cvZ'), T = document.getElementById('zTxt'), z = { a: 1, b: -1 }, drag = false, P = null;
+    function draw() {
+      P = cplane(cv, 3.2); var c = P.c, K = P.K, X = P.X, Y = P.Y;
+      var r = Math.hypot(z.a, z.b), t = argOf(z.a, z.b);
+      c.setLineDash([4, 4]); c.strokeStyle = K.dot; c.lineWidth = 1;
+      c.beginPath(); c.moveTo(X(z.a), Y(0)); c.lineTo(X(z.a), Y(z.b)); c.lineTo(X(0), Y(z.b)); c.stroke(); c.setLineDash([]);
+      if (r > 1e-9) {
+        c.strokeStyle = K.orange; c.lineWidth = 2; c.beginPath(); c.arc(X(0), Y(0), Math.min(28, r * P.s * 0.6) + 6, 0, -t, true); c.stroke();
+        c.fillStyle = K.orange; c.font = 'italic 14px ' + K.serif; c.textAlign = 'left';
+        var mid = t / 2, rr = Math.min(28, r * P.s * 0.6) + 18; c.fillText('φ', X(0) + rr * Math.cos(mid) - 4, Y(0) - rr * Math.sin(mid) + 4);
+        arrow(c, X(0), Y(0), X(z.a), Y(z.b), K.blue, 2.4);
+      }
+      dot(c, X(z.a), Y(z.b), 7, K.blue); c.strokeStyle = K.fg; c.lineWidth = 1.5; c.beginPath(); c.arc(X(z.a), Y(z.b), 7, 0, 2 * Math.PI); c.stroke();
+      c.fillStyle = K.fg; c.font = '600 13px ' + K.mono; c.textAlign = 'left'; c.fillText('z', X(z.a) + 10, Y(z.b) - 8);
+      var sgn = z.b < 0 ? ' − ' : ' + ';
+      T.innerHTML = 'z = ' + fmt(z.a, 1) + sgn + fmt(Math.abs(z.b), 1) + 'i &nbsp;·&nbsp; |z| = ' + (r < 1e-9 ? '0' : fmt(r)) + ' &nbsp;·&nbsp; Arg z = ' + (r < 1e-9 ? 'не определён' : piFrac(t) + ' ≈ ' + fmt(t * 180 / Math.PI, 0) + '°') + (r < 1e-9 ? '' : ' &nbsp;·&nbsp; z = ' + fmt(r) + '·e^{i·' + piFrac(t) + '}');
+    }
+    function pick(ev) {
+      var rc = cv.getBoundingClientRect(), x = (ev.clientX - rc.left - P.ox) / P.s, y = (P.oy - (ev.clientY - rc.top)) / P.s;
+      var sx = Math.round(x * 2) / 2, sy = Math.round(y * 2) / 2;
+      z.a = Math.abs(x - sx) < 0.12 ? sx : Math.round(x * 10) / 10; z.b = Math.abs(y - sy) < 0.12 ? sy : Math.round(y * 10) / 10;
+      z.a = clamp(z.a, -6, 6); z.b = clamp(z.b, -3.2, 3.2); draw();
+    }
+    cv.addEventListener('pointerdown', function (e) { drag = true; cv.setPointerCapture(e.pointerId); pick(e); });
+    cv.addEventListener('pointermove', function (e) { if (drag) pick(e); });
+    cv.addEventListener('pointerup', function () { drag = false; });
+    reg(draw);
+  })();
+
+  // ---------- 5. степени ----------
+  (function () {
+    var cv = document.getElementById('cvPow'), Rr = document.getElementById('powR'), Fr = document.getElementById('powF'), Nr = document.getElementById('powN');
+    var T = document.getElementById('powTxt'), prog = 1, run = null;
+    function draw() {
+      var r = Rr.value / 100, f = Fr.value * Math.PI / 180, n = +Nr.value;
+      document.getElementById('powRO').textContent = fmt(r); document.getElementById('powFO').textContent = Fr.value + '°'; document.getElementById('powNO').textContent = n;
+      var maxr = 1; for (var k = 1; k <= n; k++) maxr = Math.max(maxr, Math.pow(r, k));
+      var P = cplane(cv, Math.max(1.4, maxr * 1.15)), c = P.c, K = P.K, X = P.X, Y = P.Y;
+      c.setLineDash([3, 4]); c.strokeStyle = K.dot; c.lineWidth = 1; c.beginPath(); c.arc(X(0), Y(0), P.s, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]);
+      var shown = prog * n, px = X(1), py = Y(0);
+      dot(c, px, py, 4, K.muted);
+      c.strokeStyle = K.teal; c.lineWidth = 1.5;
+      for (k = 1; k <= Math.ceil(shown); k++) {
+        var part = Math.min(1, shown - (k - 1)), kk = k - 1 + part;
+        var rad = Math.pow(r, kk), ang = f * kk;
+        var x = X(rad * Math.cos(ang)), y = Y(rad * Math.sin(ang));
+        c.strokeStyle = K.bluebg; c.lineWidth = 1; c.beginPath(); c.moveTo(X(0), Y(0)); c.lineTo(x, y); c.stroke();
+        c.strokeStyle = K.teal; c.lineWidth = 1.6; c.beginPath(); c.moveTo(px, py);
+        var steps = 16; for (var j = 1; j <= steps; j++) { var u = k - 1 + part * j / steps; c.lineTo(X(Math.pow(r, u) * Math.cos(f * u)), Y(Math.pow(r, u) * Math.sin(f * u))); }
+        c.stroke();
+        dot(c, x, y, k === n && part === 1 ? 6 : 4, k === n && part === 1 ? K.orange : K.blue);
+        if (part === 1) { c.fillStyle = K.fg; c.font = '11px ' + K.mono; c.textAlign = 'left'; c.fillText(k === 1 ? 'z' : 'z' + sup(k), x + 7, y - 6); }
+        px = x; py = y;
+      }
+      var tot = (f * n) % (2 * Math.PI);
+      T.textContent = 'z = ' + fmt(r) + '·e^{i·' + Fr.value + '°}   ⇒   zⁿ = ' + fmt(r) + sup(n) + '·e^{i·' + (Fr.value * n) + '°} = ' + fmt(Math.pow(r, n), 3) + '·e^{i·' + Math.round(tot * 180 / Math.PI) + '°}  (угол приведён к [0°; 360°))';
+    }
+    function sup(k) { var m = '⁰¹²³⁴⁵⁶⁷⁸⁹'; return String(k).split('').map(function (d) { return m[+d]; }).join(''); }
+    [Rr, Fr, Nr].forEach(function (el) { el.addEventListener('input', function () { if (run) { run.stop(); run = null; } prog = 1; draw(); }); });
+    document.getElementById('powPlay').addEventListener('click', function () { if (run) run.stop(); run = anim(1200 * +Nr.value, function (k) { prog = k; draw(); }, function () { run = null; }); });
+    reg(draw);
+  })();
+
+  // ---------- 6. корни ----------
+  (function () {
+    var cv = document.getElementById('cvRoots'), Nr = document.getElementById('rtN'), T = document.getElementById('rtTxt'), shiftB = document.getElementById('rtShift');
+    var W = { '-1': [1, Math.PI, '−1'], '1': [1, 0, '1'], 'i': [1, Math.PI / 2, 'i'], '8': [8, 0, '8'] }, w = '-1', shift = false, prog = 0, run = null;
+    function draw() {
+      var n = +Nr.value, wd = W[w], rad = Math.pow(wd[0], 1 / n), c0 = shift ? 5 : 0;
+      document.getElementById('rtNO').textContent = n;
+      var P = cplane(cv, rad * 1.6 + 0.2, c0, 0), c = P.c, K = P.K, X = P.X, Y = P.Y;
+      var pts = []; for (var k = 0; k < n; k++) { var a = (wd[1] + 2 * Math.PI * k) / n; pts.push([rad * Math.cos(a), rad * Math.sin(a), a]); }
+      c.setLineDash([3, 4]); c.strokeStyle = K.dot; c.lineWidth = 1; c.beginPath(); c.arc(X(c0), Y(0), rad * P.s, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]);
+      c.fillStyle = K.tealbg; c.strokeStyle = K.teal; c.lineWidth = 1.5; c.beginPath();
+      pts.forEach(function (q, i) { var x = X(c0 + q[0]), y = Y(q[1]); if (i) c.lineTo(x, y); else c.moveTo(x, y); }); c.closePath(); c.fill(); c.stroke();
+      dot(c, X(c0), Y(0), 4, K.orange);
+      pts.forEach(function (q, i) { dot(c, X(c0 + q[0]), Y(q[1]), 5, K.blue); c.fillStyle = K.fg; c.font = '11px ' + K.mono; c.textAlign = 'left'; c.fillText('z' + '₀₁₂₃₄₅₆₇₈'[i], X(c0 + q[0]) + 6, Y(q[1]) - 6); });
+      if (prog > 0) {
+        var sx = c0, sy = 0, m = prog * n;
+        for (k = 0; k < Math.ceil(m); k++) {
+          var part = Math.min(1, m - k), nx = sx + pts[k][0] * part, ny = sy + pts[k][1] * part;
+          arrow(c, X(sx), Y(sy), X(nx), Y(ny), K.orange, 2.2); sx = nx; sy = ny;
+        }
+      }
+      var name = wd[2], ang = piFrac(wd[1]);
+      T.textContent = (shift ? '(z − 5)' : 'z') + sup2(n) + ' = ' + name + ':  ' + n + ' корней на окружности радиуса ' + fmt(rad, 3) + ', шаг угла 2π/' + n + '.  Сумма w-корней = 0' + (shift ? ',  сумма z = 0 + ' + n + '·5 = ' + 5 * n : '') + '.  (Arg w = ' + ang + ')';
+    }
+    function sup2(k) { return String(k).split('').map(function (d) { return '⁰¹²³⁴⁵⁶⁷⁸⁹'[+d]; }).join(''); }
+    Nr.addEventListener('input', function () { prog = 0; draw(); });
+    document.querySelectorAll('.rtw').forEach(function (b) { b.addEventListener('click', function () { w = b.dataset.w; document.querySelectorAll('.rtw').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); prog = 0; draw(); }); });
+    shiftB.addEventListener('click', function () { shift = !shift; shiftB.setAttribute('aria-pressed', String(shift)); if (shift) { Nr.value = 6; w = '-1'; document.querySelectorAll('.rtw').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.w === '-1')); }); } prog = 0; draw(); });
+    document.getElementById('rtPlay').addEventListener('click', function () { if (run) run.stop(); run = anim(700 * +Nr.value, function (k) { prog = k; draw(); }, function () { run = null; }); });
+    reg(draw);
+  })();
+
+  // ---------- 8. сектор ----------
+  (function () {
+    var cv = document.getElementById('cvSet');
+    function draw() {
+      var P = cplane(cv, 1.5, 0.2, 0.35), c = P.c, K = P.K, X = P.X, Y = P.Y, s = P.s, a1 = Math.PI / 6, a2 = Math.PI / 2;
+      c.setLineDash([3, 4]); c.strokeStyle = K.dot; c.lineWidth = 1; c.beginPath(); c.arc(X(0), Y(0), s, 0, 2 * Math.PI); c.stroke(); c.setLineDash([]);
+      c.fillStyle = K.tealbg; c.beginPath(); c.moveTo(X(0), Y(0)); c.arc(X(0), Y(0), s, -a1, -a2, true); c.closePath(); c.fill();
+      c.strokeStyle = K.teal; c.lineWidth = 2.5; c.beginPath(); c.arc(X(0), Y(0), s, -a1, -a2, true); c.stroke();
+      c.beginPath(); c.moveTo(X(0), Y(0)); c.lineTo(X(0), Y(1)); c.stroke();
+      c.setLineDash([6, 5]); c.beginPath(); c.moveTo(X(0), Y(0)); c.lineTo(X(Math.cos(a1)), Y(Math.sin(a1))); c.stroke(); c.setLineDash([]);
+      dot(c, X(0), Y(0), 5, K.fg); dot(c, X(0), Y(0), 3.2, css('--surface'));
+      dot(c, X(Math.cos(a1)), Y(Math.sin(a1)), 5, K.teal); dot(c, X(Math.cos(a1)), Y(Math.sin(a1)), 3.2, css('--surface'));
+      c.strokeStyle = K.orange; c.lineWidth = 1.5; c.beginPath(); c.arc(X(0), Y(0), 30, 0, -a1, true); c.stroke();
+      c.fillStyle = K.orange; c.font = 'italic 13px ' + K.serif; c.textAlign = 'left'; c.fillText('π/6', X(0) + 34, Y(0) - 4);
+      c.font = '12px ' + K.mono; c.fillStyle = K.fg;
+      c.fillText('луч π/2 входит (≤)', X(0) + 8, Y(0.55));
+      c.fillText('луч π/6 не входит (<)', X(Math.cos(a1) * 0.55) + 4, Y(Math.sin(a1) * 0.55) + 18);
+      c.fillText('дуга |z| = 1 входит', X(0.72) + 4, Y(0.72) - 4);
+      c.fillText('0 не входит', X(0) + 8, Y(0) + 18);
+    }
+    reg(draw);
+  })();
+
+  // ---------- 9. спираль ----------
+  (function () {
+    var cv = document.getElementById('cvSp'), T = document.getElementById('spTxt'), shown = 14;
+    function draw() {
+      var P = cplane(cv, 1.25, 0.1, -0.1), c = P.c, K = P.K, X = P.X, Y = P.Y;
+      var re = 1, im = 0, pts = [[1, 0]];
+      for (var n = 2; n <= 14; n++) { var nr = (re + im) / 2, ni = (im - re) / 2; re = nr; im = ni; pts.push([re, im]); }
+      c.strokeStyle = K.teal; c.lineWidth = 1.6; c.beginPath();
+      for (n = 0; n < Math.min(shown, 14); n++) { var x = X(pts[n][0]), y = Y(pts[n][1]); if (n) c.lineTo(x, y); else c.moveTo(x, y); }
+      c.stroke();
+      for (n = 0; n < Math.min(shown, 14); n++) { dot(c, X(pts[n][0]), Y(pts[n][1]), n === 0 ? 5 : 4, n === 0 ? K.blue : K.teal); if (n < 6) { c.fillStyle = K.fg; c.font = '11px ' + K.mono; c.textAlign = 'left'; c.fillText('a' + '₁₂₃₄₅₆'[n], X(pts[n][0]) + 6, Y(pts[n][1]) - 6); } }
+      dot(c, X(0), Y(0), 4, K.orange);
+      var k = Math.min(shown, 14);
+      T.textContent = 'a' + k + ' = ' + fmt(pts[k - 1][0], 4) + (pts[k - 1][1] < 0 ? ' − ' : ' + ') + fmt(Math.abs(pts[k - 1][1]), 4) + 'i,   |a' + k + '| = (1/√2)^' + (k - 1) + ' ≈ ' + fmt(Math.pow(Math.SQRT1_2, k - 1), 4) + '  → 0';
+    }
+    document.getElementById('spPlay').addEventListener('click', function () { anim(4200, function (k) { shown = Math.max(1, Math.round(k * 14)); draw(); }); });
+    reg(draw);
+  })();
+
+  // ---------- 11. тест ----------
+  (function () {
+    var Q = [
+      ['Чему равен Arg(−i), если аргумент берётся из [0; 2π)?', ['π/2', '3π/2', '−π/2'], 1, 'Точка −i лежит на оси Im снизу: угол 270° = 3π/2. Вариант −π/2 не подходит, он вне [0; 2π).'],
+      ['|3 − 4i| = ?', ['5', '7', '1'], 0, '√(9 + 16) = 5.'],
+      ['(1 + i)² = ?', ['2', '2i', '1 + i²'], 1, '1 + 2i + i² = 1 + 2i − 1 = 2i.'],
+      ['Сумма всех корней уравнения z⁵ = 7 равна…', ['7', '0', '5'], 1, 'Корни — вершины правильного пятиугольника с центром в 0, их сумма 0.'],
+      ['lim (2n² + 1)/(n² − 3) = ?', ['2', '∞', '−1/3'], 0, 'Степени равны, отношение старших коэффициентов 2/1.'],
+      ['lim sin(n)/n = ?', ['1', 'не существует', '0'], 2, 'Ограниченная sin n на бесконечно малую 1/n.'],
+      ['Последовательность (−1)ⁿ ограничена. Она сходится?', ['да', 'нет'], 1, 'Подпоследовательности чётных и нечётных членов идут к 1 и −1 — разные пределы.'],
+      ['Главное значение Ln(i) = ?', ['iπ/2', 'π/2', '0'], 0, 'ln|i| = ln 1 = 0, Arg i = π/2, поэтому Ln i = iπ/2.'],
+      ['e^{iπ} = ?', ['1', '−1', 'i'], 1, 'cos π + i sin π = −1.'],
+      ['Монотонно возрастающая ограниченная сверху последовательность…', ['сходится', 'может расходиться'], 0, 'Это теорема Вейерштрасса.']
+    ];
+    var box = document.getElementById('quizBox'), score = document.getElementById('score'), got = 0, done = 0;
+    function upd() { score.textContent = done ? 'Верно: ' + got + ' из ' + done + ' (всего ' + Q.length + ')' : ''; }
+    Q.forEach(function (q) {
+      var d = document.createElement('div'); d.className = 'q';
+      d.innerHTML = '<p></p><div class="opts"></div><p class="fb"></p>';
+      d.querySelector('p').textContent = q[0];
+      var opts = d.querySelector('.opts'), fb = d.querySelector('.fb'), answered = false;
+      q[1].forEach(function (o, i) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = o;
+        b.addEventListener('click', function () {
+          var right = i === q[2];
+          b.classList.add(right ? 'ok' : 'no');
+          if (!right) opts.children[q[2]].classList.add('ok');
+          fb.textContent = (right ? 'Верно. ' : 'Неверно. ') + q[3];
+          if (!answered) { answered = true; done++; if (right) got++; upd(); }
+        });
+        opts.appendChild(b);
+      });
+      box.appendChild(d);
+    });
+  })();
+})();
+</script>
+</body>
+</html>
